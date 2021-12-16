@@ -1,13 +1,11 @@
-SRCS=	main.c	board_check.c
+SRCS=	src/main.c	src/board_check.c \
+		src/get_next_line/get_next_line_utils.c \
+		src/get_next_line/get_next_line.c
 
-INCS=	so_long.h
+INCS=	includes/so_long.h	includes/ft_printf
 OBJS= ${SRCS:.c=.o}
 
-MAKELIBFT=	${MAKE} -C ./libft
-
 MAKEMLX=	${MAKE} -C ./mlx
-
-MAKEPRINTF= ${MAKE} -C ./ft_printf
 
 CFLAGS= -Wall -Wextra -Werror
 NAME= so_long
@@ -21,7 +19,7 @@ all: 		$(NAME)
 $(NAME): 	$(OBJS)
 			${MAKEMLX}
 			${MAKELIBFT}
-			gcc ${CFLAGS} -I./ -Lmlx -lmlx -framework OpenGL -framework AppKit $(OBJS) libftprintf.a -o $(NAME)
+			gcc ${CFLAGS} -I./ -Lmlx -lmlx -framework OpenGL -framework AppKit $(OBJS) libftprintf.a libft.a -o $(NAME)
 
 bonus:		${NAME}
 
