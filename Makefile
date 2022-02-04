@@ -1,43 +1,56 @@
-SRCS=	src/main.c	src/board_check.c \
-		src/get_next_line/get_next_line_utils.c \
-		src/get_next_line/get_next_line.c
+NAME = so_long
 
-INCS=	includes/so_long.h	includes/ft_printf
-OBJS= ${SRCS:.c=.o}
+CFLAGS = -Wall -Wextra -Werror
 
-MAKEMLX=	${MAKE} -C ./mlx
+MAKELIBFT = ${MAKE} -C ./libft
 
-CFLAGS= -Wall -Wextra -Werror
-NAME= so_long
+MAKEPRINTF = ${MAKE} -C ./42-printf
 
-all: 		$(NAME)
+MAKEMLX = ${MAKE} -C ./mlx
+
+SRCS = 	src/so_long.c			\
+		src/error.c				\
+		src/start_game.c		\
+		src/utils.c				\
+		src/move.c				\
+		src/check_map.c			\
+		src/hooks.c				\
+		src/print_map.c			\
+		src/print_map_utils.c	\
+		get_next_line/get_next_line.c \
+		get_next_line/get_next_line_utils.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(NAME)
 
 .c.o:
-			@echo Compiling $<
-			gcc $(CFLAGS) -Imlx -c $< -o ${<:.c=.o}
+	@echo Compiling $<
+	gcc $(CFLAGS) -Imlx -c $< -o ${<:.c=.o}
 
 $(NAME): 	$(OBJS)
-			${MAKEMLX}
-			${MAKELIBFT}
-			gcc ${CFLAGS} -I./ -Lmlx -lmlx -framework OpenGL -framework AppKit $(OBJS) libftprintf.a libft.a -o $(NAME)
+			$(MAKEMLX)
+			$(MAKELIBFT)
+			$(MAKEPRINTF)
+			gcc $(CFLAGS) -I./ -Lmlx -lmlx -framework OpenGL -framework AppKit $(OBJS) libft/libft.a 42-printf/libftprintf.a -o $(NAME)
 
-bonus:		${NAME}
+bonus: $(NAME)
 
 clean:
-			@echo Cleaning out thos old .o
-			${MAKEMLX} clean
-			${MAKELIBFT} clean
-			rm -f $(OBJS)
+	rm -f $(OBJS)
+	$(MAKEMLX) clean
+	$(MAKELIBFT) clean
+	$(MAKEPRINTF) clean
 
-fclean:		clean
-			@echo Cleaning out that old $(NAME)
-			${MAKELIBFT} fclean
-			${MAKEMLX} clean
-			rm -f $(NAME)
+fclean:
+	$(MAKEMLX) clean
+	$(MAKELIBFT) fclean
+	$(MAKEPRINTF) fclean
+	rm -f $(NAME)
 
-re:			fclean $(NAME)
+re: fclean all
 
 out:
-			gcc $(CFLAGS) $(SRCS)
+	gcc $(CFLAGS) $(SRCS)
 
-.PHONY:		all bonus clean fclean re
+.PHONY: all clean fclean re
