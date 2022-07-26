@@ -6,13 +6,13 @@ static int	key_hook(int keycode, t_data *module)
 		close_all(module);
 	else if (module->end_game == 1)
 		return (0);
-	else if (keycode == KEY_D)
+	else if (keycode == KEY_D || keycode == KEY_RIGHT)
 		move(module, module->player->player_x + 1, module->player->player_y, 2);
-	else if (keycode == KEY_A)
+	else if (keycode == KEY_A || keycode == KEY_LEFT)
 		move(module, module->player->player_x - 1, module->player->player_y, 1);
-	else if (keycode == KEY_S)
+	else if (keycode == KEY_S || keycode == KEY_DOWN)
 		move(module, module->player->player_x, module->player->player_y + 1, 0);
-	else if (keycode == KEY_W)
+	else if (keycode == KEY_W || keycode == KEY_UP)
 		move(module, module->player->player_x, module->player->player_y - 1, 3);
 	return (0);
 }
