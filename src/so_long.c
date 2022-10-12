@@ -1,5 +1,12 @@
 #include "../so_long.h"
 
+
+/*
+Transférer le t_data dans une autre fonction et faire
+le plus de test possible dans main sans le t_data.
+Puis faire attention à ce qu'il n'y ai plus de segmentation fault
+télécharger brew et valgrind
+*/
 int	main(int argc, char **argv)
 {
 	t_data	*data;
