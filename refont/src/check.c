@@ -1,40 +1,5 @@
 #include "../so_long.h"
 
-int	check_map_name(char *name)
-{
-	int	len;
-	int	dot;
-	int b;
-	int e;
-	int	r;
-
-	len = ft_strlen(name);
-	dot = len - 4;
-	b = len - 3;
-	e = len - 2;
-	r = len - 1;
-	if (name[r] == 'r' && name[e] == 'e' && name[b] == 'b' && name[dot] == '.')
-		return (1);
-	return (0);
-}
-
-int	check_file_presence(char *path)
-{
-	int	fd;
-
-	fd = open(path, O_RDONLY);
-	if (fd == -1)
-	{
-		close (fd);
-		return (0);
-	}
-	else
-	{
-		close (fd);
-		return (1);
-	}
-}
-
 static int	verify_width_map(t_data *data, char *content, int height_now)
 {
 	if (data->map->width < 4)
@@ -58,29 +23,32 @@ static int	verify_width_map(t_data *data, char *content, int height_now)
 	return (8);
 }
 
-int	read_map_while(t_data *data, int a, int i)
+static	int	read_map_while(t_data *data, int *a, int i)
 {
 	char	*tmp_map;
 	int		value;
 
-	init_tmp_map(tmp_map, a);
+	tmp_map = get_next_line(data->map->fd);
+	if (tmp_map == NULL)
+		free_ptr((void *)&tmp_map);
 	if (data->map->width == 0)
 		data->map->width = ft_strlen(tmp_map) - 1;
 	value = verify_width_map(data, tmp_map, *a);
 	if (value == -1)
 	{
 		data->map->height = *a + 1;
-		free_ptr((void *)&tmp_map);
+		free_ptr((void **)&tmp_map);
 		return (6);
 	}
 	tmp_map = data->map->map[i];
 	free_ptr((void *)&data->map->map[i]);
 	data->map->map[i] = tmp_map;
+	free_ptr((void **)&tmp_map);
 	return (0);
 }
 
 
-int	verify_counts(t_objects objects, t_data *data, int a)
+static	int	verify_counts(t_objects objects, t_data *data, int a)
 {
 	int	value;
 
@@ -99,7 +67,7 @@ int	verify_counts(t_objects objects, t_data *data, int a)
 }
 
 
-int	read_map(t_data *data)
+static	int	read_map(t_data *data)
 {
 	t_objects	objects;
 	int			a;
@@ -117,15 +85,15 @@ int	read_map(t_data *data)
 		objects.p += ft_verify_objects(data->map->map[a], 'P');
 		a++;
 	}
-	// clean the objects
 	return (verify_counts(objects, data, a));
 }
 
 
-int	check_map(char *path, t_data *data)
+int	check_map(t_data *data)
 {
 	int	value;
 
+	value = 0;
 	data->map = malloc(1 * sizeof(t_map));
 	if (data->map == NULL)
 		return (1);

@@ -1,21 +1,25 @@
 #include "../so_long.h"
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
+	int	value;
+
+	value = 0;
 	if (argc == 2)
 	{
 		if (check_map_name(argv[1]) == 1)
 		{
 			if (check_file_presence(argv[1]) == 1)
 			{
-				init_map(argv[1]);
+				value = init_map(argv[1]);
 			}
 			else
-				exit (error("File not present at the location you selected !"));
+				value = 9;
 		}
 		else
-			exit (error("Extension must be .ber nothing else !"));
+			value = 10;
 	}
 	else
-		exit (error("Add a file path to a file with type .ber !"));
+		value = 11;
+	exit (ft_printf(error_handler(value)));
 }

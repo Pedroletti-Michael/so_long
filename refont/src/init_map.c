@@ -1,6 +1,6 @@
 #include "../so_long.h"
 
-void	init_map(char *path)
+int	init_map(char *path)
 {
 	t_data	*data;
 	int		value;
@@ -9,13 +9,47 @@ void	init_map(char *path)
 	if (data == NULL)
 		value = 1;
 	else
-		value = check_map(path, data);
-
+	{
+		data->map->fd = open(path, 1);
+		value = check_map(data);
+	}
 	if (value == 0)
-		start(data);
+		value = start(data);
 	else if (value != 1)
 	{
-		// clean data before quit the session
+		free_ptr((void *)&data);
 	}
-	exit (error_handler(value))
+	return (value);
+}
+
+int	check_map_name(char *name)
+{
+	int	len;
+	int	dot;
+	int b;
+	int e;
+	int	r;
+
+	len = ft_strlen(name);
+	dot = len - 4;
+	b = len - 3;
+	e = len - 2;
+	r = len - 1;
+	if (name[r] == 'r' && name[e] == 'e' && name[b] == 'b' && name[dot] == '.')
+		return (1);
+	return (0);
+}
+
+int	check_file_presence(char *path)
+{
+	int	fd;
+	int value;
+
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+		value = 0;
+	else
+		value = 1;
+	close (fd);
+	return (value);
 }
